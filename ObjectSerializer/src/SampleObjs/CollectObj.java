@@ -7,10 +7,8 @@ public class CollectObj {
 
 	private ArrayList<SimpObj> aList = new ArrayList<SimpObj>();
 	
-	public CollectObj(SimpObj anArray[]){
-		for(SimpObj o : anArray){
-			aList.add(o);
-		}
+	public CollectObj(ArrayList<SimpObj> aList){
+		this.aList = aList;
 	}
 	
 	public String toString(){

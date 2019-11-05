@@ -4,8 +4,8 @@ public class RefObj {
 
 	private SimpObj anObj;
 	
-	public RefObj(int a, double b){
-		anObj = new SimpObj(a, b);
+	public RefObj(SimpObj anObj){
+		this.anObj = anObj;
 	}
 	
 	public String toString(){

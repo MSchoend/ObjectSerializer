@@ -1,15 +1,19 @@
 package Sender;
 
-import java.io.PrintWriter;
 import java.lang.reflect.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+import SampleObjs.*;
 
 public class Driver {
 
 	public static final int PORT = 1081;
+	private static Scanner input;
 
 	public static void main(String args[]) {
 
 		Serializer s = new Serializer(PORT);
+		input = new Scanner(System.in);
 		//runMenu();
 		
 	}
@@ -60,29 +64,50 @@ public class Driver {
 
 	}
 
-	private static void makeColl() {
-		// TODO Auto-generated method stub
-
+	private static CollectObj makeColl() {
+		System.out.print("Please input collection length");
+		int len = input.nextInt();
+		ArrayList<SimpObj> list = new ArrayList<SimpObj>();
+		for(int i = 0; i < len; i++) {
+			System.out.println("--Object " + (i+1) + "--");
+			list.add(makeSimple());
+		}
+		return new CollectObj(list);
 	}
 
-	private static void makeRefArr() {
-		// TODO Auto-generated method stub
-
+	private static RefArrayObj makeRefArr() {
+		System.out.print("Please input the array length: ");
+		int len = input.nextInt();
+		SimpObj arr[] = new SimpObj[len];
+		for(int i = 0; i < len; i++) {
+			System.out.println("--Object " + (i+1) + "--");
+			arr[i] = makeSimple();
+		}
+		return new RefArrayObj(arr);
 	}
 
-	private static void makeArr() {
-		// TODO Auto-generated method stub
-
+	private static ArrayObj makeArr() {
+		System.out.print("Please input the array length: ");
+		int len = input.nextInt();
+		int arr[] = new int[len];
+		for(int i = 0; i < len; i++) {
+			System.out.print("Value " + (i+1) + ": ");
+			arr[i] = input.nextInt();
+		}
+		return new ArrayObj(arr);
 	}
 
-	private static void makeRef() {
-		// TODO Auto-generated method stub
-
+	private static RefObj makeRef() {
+		SimpObj o = makeSimple();
+		return new RefObj(o);
 	}
 
-	private static void makeSimple() {
-		// TODO Auto-generated method stub
-
+	private static SimpObj makeSimple() {
+		System.out.print("Please input an integer: ");
+		int a = input.nextInt();
+		System.out.print("Please input a double: ");
+		double b = input.nextDouble();
+		return new SimpObj(a, b);
 	}
 
 }

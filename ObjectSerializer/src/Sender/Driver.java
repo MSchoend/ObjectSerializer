@@ -98,8 +98,24 @@ public class Driver {
 	}
 
 	private static RefObj makeRef() {
-		SimpObj o = makeSimple();
-		return new RefObj(o);
+		System.out.print("Please input an Integer: ");
+		int a = input.nextInt();
+		System.out.print("Make this object contain a reference? (else will be null) (y/n): ");
+		char choice = (char)input.nextByte();
+		RefObj b;
+		switch(choice){
+		case 'y':
+			b = makeRef();
+			break;
+		case 'n':
+			b = null;
+			break;
+		default:
+			System.out.println("Token not recognized; setting to null");
+			b = null;
+			break;
+		}
+		return new RefObj(a, b);
 	}
 
 	private static SimpObj makeSimple() {

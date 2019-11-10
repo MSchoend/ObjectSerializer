@@ -60,8 +60,24 @@ public class Driver {
 	}
 
 	private static void serialize() {
-		// TODO Auto-generated method stub
-
+		/*
+		 * Create an XML Document, XMLOutputter, etc.
+		 * For each object in our array
+		 * 		getClass
+		 * 		get ID
+		 * 		add ID to array
+		 * 		create element - class, attribute - ID
+		 * 		getFields
+		 * 		for each field
+		 * 		getComponentType
+		 * 		if array
+		 * 			for each array element
+		 * 				process element
+		 * 		else
+		 * 			process element
+		 * 			(check for primitive, recurse if object, check against IDs serialized, etc.)
+		 * 
+		 */
 	}
 
 	private static CollectObj makeColl() {

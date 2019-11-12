@@ -38,7 +38,6 @@ public class Serializer {
 		Field[] fields = c.getDeclaredFields();
 		for (Field f : fields) {
 			//managing for primitives, objects, arrays
-			//
 		}
 	}
 	

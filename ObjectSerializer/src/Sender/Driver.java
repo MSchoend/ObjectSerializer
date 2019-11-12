@@ -72,7 +72,6 @@ public class Driver {
 		
 		for(Object o : list) {
 			sender.convertToXML(o);
-			//
 		}
 		
 	}

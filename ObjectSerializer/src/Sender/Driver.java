@@ -4,6 +4,7 @@ import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 import SampleObjs.*;
+import org.jdom2.*;
 
 public class Driver {
 
@@ -14,70 +15,65 @@ public class Driver {
 
 		Serializer s = new Serializer(PORT);
 		input = new Scanner(System.in);
-		//runMenu();
+		ArrayList<Object> allObjs = new ArrayList<Object>();
+		boolean willSend = runMenu(allObjs);
+		if(willSend) {
+			serialize(s, allObjs);
+		}
 		
 	}
 	
 
-	public static void runMenu() {
-		int input = -1;
+	public static boolean runMenu(ArrayList<Object> list) {
+		int command = -1;
+		boolean result = false;
 
-		while (input != 7) {
+		while (command != 7) {
 			System.out.println("Please input a number corresponding to an object or command: ");
 			System.out.println("1. Simple Object");
 			System.out.println("2. Reference Object");
 			System.out.println("3. Primitive Array Object");
 			System.out.println("4. Reference Array Object");
 			System.out.println("5. Collection Object");
-			System.out.println("6. Serialize and Send");
-			System.out.println("7. Exit");
+			System.out.println("6. Serialize, Send and Exit");
+			System.out.println("7. Exit without sending");
 
-			switch (input) {
+			switch (command) {
 			case 1:
-				makeSimple();
+				list.add(makeSimple());
 				break;
 			case 2:
-				makeRef();
+				list.add(makeRef());
 				break;
 			case 3:
-				makeArr();
+				list.add(makeArr());
 				break;
 			case 4:
-				makeRefArr();
+				list.add(makeRefArr());
 				break;
 			case 5:
-				makeColl();
+				list.add(makeColl());
 				break;
 			case 6:
-				serialize();
+				result = true;
+				command = 7;
 				break;
 			case 7:
+				result = false;
 				break;
 			default:
-				System.out.println("Command not recognized, try again:");
+				System.out.println("Command not recognized, try again.");
 			}
 		}
+		return result;
 	}
 
-	private static void serialize() {
-		/*
-		 * Create an XML Document, XMLOutputter, etc.
-		 * For each object in our array
-		 * 		getClass
-		 * 		get ID
-		 * 		add ID to array
-		 * 		create element - class, attribute - ID
-		 * 		getFields
-		 * 		for each field
-		 * 		getComponentType
-		 * 		if array
-		 * 			for each array element
-		 * 				process element
-		 * 		else
-		 * 			process element
-		 * 			(check for primitive, recurse if object, check against IDs serialized, etc.)
-		 * 
-		 */
+	private static void serialize(Serializer sender, ArrayList<Object> list) {
+		
+		for(Object o : list) {
+			sender.convertToXML(o);
+		}
+		
 	}
 
 	private static CollectObj makeColl() {

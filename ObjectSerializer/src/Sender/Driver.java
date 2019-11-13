@@ -71,14 +71,13 @@ public class Driver {
 	private static void serialize(Serializer sender, ArrayList<Object> list) {
 		
 		for(Object o : list) {
-			sender.convertToXML(o);
-			
+			sender.add(sender.convertToXML(o));
 		}
 		
 	}
 
 	private static CollectObj makeColl() {
-		System.out.print("Please input collection length");
+		System.out.print("Please input collection length: ");
 		int len = input.nextInt();
 		ArrayList<SimpObj> list = new ArrayList<SimpObj>();
 		for(int i = 0; i < len; i++) {

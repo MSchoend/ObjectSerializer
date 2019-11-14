@@ -10,6 +10,7 @@ public class Driver {
 
 	public static final int PORT = 1081;
 	private static Scanner input;
+	private static Document xml;
 
 	public static void main(String args[]) {
 
@@ -19,6 +20,7 @@ public class Driver {
 		boolean willSend = runMenu(allObjs);
 		if(willSend) {
 			serialize(s, allObjs);
+			s.send();
 		}
 		
 	}
@@ -37,6 +39,8 @@ public class Driver {
 			System.out.println("5. Collection Object");
 			System.out.println("6. Serialize, Send and Exit");
 			System.out.println("7. Exit without sending");
+			
+			command = input.nextInt();
 
 			switch (command) {
 			case 1:
@@ -70,9 +74,7 @@ public class Driver {
 
 	private static void serialize(Serializer sender, ArrayList<Object> list) {
 		
-		for(Object o : list) {
-			sender.add(sender.convertToXML(o));
-		}
+		xml = sender.serialize(list);
 		
 	}
 
@@ -113,7 +115,7 @@ public class Driver {
 		System.out.print("Please input an Integer: ");
 		int a = input.nextInt();
 		System.out.print("Make this object contain a reference? (else will be null) (y/n): ");
-		char choice = (char)input.nextByte();
+		char choice = input.next().charAt(0);
 		RefObj b;
 		switch(choice){
 		case 'y':

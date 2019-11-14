@@ -96,7 +96,22 @@ public class Serializer {
 			Element value = new Element("value");
 			value.addContent(f.get(o).toString());
 			e.addContent(value);
-		} else if (cType != null) {
+		} else if (t.equals(ArrayList.class)){
+			ArrayList list = (ArrayList)f.get(o);
+			Object[] array = list.toArray();
+			Element collect = new Element("object");
+			collect.setAttribute("class", list.getClass().getName());
+			collect.setAttribute("id", Integer.toString(System.identityHashCode(list)));
+			collect.setAttribute("length", Integer.toString(array.length));
+			for(Object v : array){
+				Element reference = new Element("reference");
+				reference.addContent(Integer.toString(System.identityHashCode(v)));
+				add(convertToXML(v));
+				collect.addContent(reference);
+			}
+			e.addContent(collect);
+		}
+			else if (cType != null) {
 			Element array = new Element("object");
 			Object arr = f.get(o);
 			array.setAttribute("class", arr.getClass().getName());

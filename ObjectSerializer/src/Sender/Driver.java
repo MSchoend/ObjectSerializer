@@ -75,7 +75,7 @@ public class Driver {
 	private static void serialize(Serializer sender, ArrayList<Object> list) {
 		
 		xml = sender.serialize(list);
-		
+			
 	}
 
 	private static CollectObj makeColl() {

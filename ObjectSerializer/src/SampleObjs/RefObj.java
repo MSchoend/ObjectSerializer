@@ -16,7 +16,7 @@ public class RefObj {
 		if (isNull) {
 			return "Int: " + anInt + " | RefObj: null";
 		} else {
-			return "Int: " + anInt + " | RefObj: {\n" + anObj.toString() + "\n}";
+			return "Int: " + anInt + " | RefObj: " + System.identityHashCode(anObj);
 		}
 	}
 

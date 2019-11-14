@@ -2,6 +2,7 @@ package Sender;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import SampleObjs.*;
 import org.jdom2.*;
@@ -11,12 +12,14 @@ public class Driver {
 	public static final int PORT = 1081;
 	private static Scanner input;
 	private static Document xml;
+	private static ArrayList<RefObj> references;
 
 	public static void main(String args[]) {
 
 		Serializer s = new Serializer(PORT);
 		input = new Scanner(System.in);
 		ArrayList<Object> allObjs = new ArrayList<Object>();
+		references = new ArrayList<RefObj>();
 		boolean willSend = runMenu(allObjs);
 		if(willSend) {
 			serialize(s, allObjs);
@@ -119,7 +122,7 @@ public class Driver {
 		RefObj b;
 		switch(choice){
 		case 'y':
-			b = makeRef();
+			b = makeCircRef();
 			break;
 		case 'n':
 			b = null;
@@ -130,6 +133,27 @@ public class Driver {
 			break;
 		}
 		return new RefObj(a, b);
+	}
+	
+	private static RefObj makeCircRef(){
+		RefObj toReturn;
+		System.out.println("Make a new object (1) or choose from existing objects? (2)");
+		switch(input.nextInt()){
+		case 1:
+			toReturn = makeRef();
+			break;
+		case 2:
+			System.out.println("Choose an index (1-n):");
+			System.out.println(Arrays.toString(references.toArray()));
+			int idx = input.nextInt();
+			toReturn = references.get(idx-1);
+			break;
+		default:
+			System.out.println("Token not recognized; constructing new object");
+			toReturn = makeRef();
+			break;
+		}
+		return toReturn;
 	}
 
 	private static SimpObj makeSimple() {

@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 import Sender.Driver;
 
-public class Receiver {
+public class Deserializer {
 
 	public static void main(String args[]) {		
 		

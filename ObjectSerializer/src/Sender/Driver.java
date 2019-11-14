@@ -117,6 +117,8 @@ public class Driver {
 	private static RefObj makeRef() {
 		System.out.print("Please input an Integer: ");
 		int a = input.nextInt();
+		RefObj toReturn = new RefObj(a);
+		references.add(toReturn);
 		System.out.print("Make this object contain a reference? (else will be null) (y/n): ");
 		char choice = input.next().charAt(0);
 		RefObj b;
@@ -132,7 +134,8 @@ public class Driver {
 			b = null;
 			break;
 		}
-		return new RefObj(a, b);
+		toReturn.setReference(b);
+		return toReturn;
 	}
 	
 	private static RefObj makeCircRef(){

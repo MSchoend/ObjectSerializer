@@ -17,6 +17,7 @@ public class Serializer {
 	private ArrayList<Integer> storedIDs;
 	private Document objsToSend;
 	private Element root;
+	private ArrayList<Integer> serializedIDs;
 
 	public Serializer(int port) {
 		storedIDs = new ArrayList();
@@ -24,6 +25,8 @@ public class Serializer {
 		objsToSend = new Document();
 		root = new Element("serialized");
 		objsToSend.addContent(root);
+		serializedIDs = new ArrayList<Integer>();
+		
 		/*
 		 * try { System.out.print("Enter IP: "); Scanner in = new
 		 * Scanner(System.in); String ip = in.nextLine(); clientSock = new
@@ -138,9 +141,13 @@ public class Serializer {
 			Element reference = new Element("reference");
 			Object value = f.get(o);
 			if (value != null) {
-				reference.addContent(Integer.toString(System.identityHashCode(value)));
+				int hash = System.identityHashCode(value);
+				reference.addContent(Integer.toString(hash));
 				e.addContent(reference);
-				add(convertToXML(value));
+				if(!serializedIDs.contains(hash)){
+					serializedIDs.add(hash);
+					add(convertToXML(value));
+				}
 			}
 		}
 

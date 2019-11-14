@@ -11,6 +11,12 @@ public class RefObj {
 		this.anObj = anObj;
 		isNull = this.anObj == null;
 	}
+	
+	public RefObj(int anInt){
+		this.anInt = anInt;
+		this.anObj = null;
+		isNull = true;
+	}
 
 	public String toString() {
 		if (isNull) {
@@ -18,6 +24,10 @@ public class RefObj {
 		} else {
 			return "Int: " + anInt + " | RefObj: " + System.identityHashCode(anObj);
 		}
+	}
+	
+	public void setReference(RefObj anObj){
+		this.anObj = anObj;
 	}
 
 }

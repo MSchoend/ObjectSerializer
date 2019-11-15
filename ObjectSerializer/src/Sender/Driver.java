@@ -1,11 +1,16 @@
 package Sender;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import SampleObjs.*;
 import org.jdom2.*;
+import org.jdom2.output.XMLOutputter;
+
+import java.net.*;
 
 public class Driver {
 
@@ -16,18 +21,42 @@ public class Driver {
 
 	public static void main(String args[]) {
 
-		Serializer s = new Serializer(PORT);
+		Serializer s = new Serializer();
 		input = new Scanner(System.in);
 		ArrayList<Object> allObjs = new ArrayList<Object>();
 		references = new ArrayList<RefObj>();
 		boolean willSend = runMenu(allObjs);
-		if(willSend) {
+		if (willSend) {
 			serialize(s, allObjs);
-			s.send();
+			send();
 		}
-		
+
 	}
-	
+
+	private static void send() {
+
+		try {
+			System.out.print("Enter IP: ");
+			Scanner in = new Scanner(System.in);
+			String ip = in.nextLine();
+			Socket clientSock = new Socket(ip, Driver.PORT);
+			System.out.println("connected!");
+
+			XMLOutputter outputter = new XMLOutputter();
+			PrintWriter writer = new PrintWriter(clientSock.getOutputStream());
+			writer.print(outputter.outputString(xml));
+			in.close();
+			writer.close();
+			clientSock.close();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 
 	public static boolean runMenu(ArrayList<Object> list) {
 		int command = -1;
@@ -42,7 +71,7 @@ public class Driver {
 			System.out.println("5. Collection Object");
 			System.out.println("6. Serialize, Send and Exit");
 			System.out.println("7. Exit without sending");
-			
+
 			command = input.nextInt();
 
 			switch (command) {
@@ -76,17 +105,17 @@ public class Driver {
 	}
 
 	private static void serialize(Serializer sender, ArrayList<Object> list) {
-		
+
 		xml = sender.serialize(list);
-			
+
 	}
 
 	private static CollectObj makeColl() {
 		System.out.print("Please input collection length: ");
 		int len = input.nextInt();
 		ArrayList<SimpObj> list = new ArrayList<SimpObj>();
-		for(int i = 0; i < len; i++) {
-			System.out.println("--Object " + (i+1) + "--");
+		for (int i = 0; i < len; i++) {
+			System.out.println("--Object " + (i + 1) + "--");
 			list.add(makeSimple());
 		}
 		return new CollectObj(list);
@@ -96,8 +125,8 @@ public class Driver {
 		System.out.print("Please input the array length: ");
 		int len = input.nextInt();
 		SimpObj arr[] = new SimpObj[len];
-		for(int i = 0; i < len; i++) {
-			System.out.println("--Object " + (i+1) + "--");
+		for (int i = 0; i < len; i++) {
+			System.out.println("--Object " + (i + 1) + "--");
 			arr[i] = makeSimple();
 		}
 		return new RefArrayObj(arr);
@@ -107,8 +136,8 @@ public class Driver {
 		System.out.print("Please input the array length: ");
 		int len = input.nextInt();
 		int arr[] = new int[len];
-		for(int i = 0; i < len; i++) {
-			System.out.print("Value " + (i+1) + ": ");
+		for (int i = 0; i < len; i++) {
+			System.out.print("Value " + (i + 1) + ": ");
 			arr[i] = input.nextInt();
 		}
 		return new ArrayObj(arr);
@@ -122,7 +151,7 @@ public class Driver {
 		System.out.print("Make this object contain a reference? (else will be null) (y/n): ");
 		char choice = input.next().charAt(0);
 		RefObj b;
-		switch(choice){
+		switch (choice) {
 		case 'y':
 			b = makeCircRef();
 			break;
@@ -137,11 +166,11 @@ public class Driver {
 		toReturn.setReference(b);
 		return toReturn;
 	}
-	
-	private static RefObj makeCircRef(){
+
+	private static RefObj makeCircRef() {
 		RefObj toReturn;
 		System.out.println("Make a new object (1) or choose from existing objects? (2)");
-		switch(input.nextInt()){
+		switch (input.nextInt()) {
 		case 1:
 			toReturn = makeRef();
 			break;
@@ -149,7 +178,7 @@ public class Driver {
 			System.out.println("Choose an index (1-n):");
 			System.out.println(Arrays.toString(references.toArray()));
 			int idx = input.nextInt();
-			toReturn = references.get(idx-1);
+			toReturn = references.get(idx - 1);
 			break;
 		default:
 			System.out.println("Token not recognized; constructing new object");

@@ -1,8 +1,6 @@
 package Sender;
 
-import java.net.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.io.*;
 import org.jdom2.*;
 import org.jdom2.output.Format;
@@ -12,32 +10,17 @@ import java.lang.reflect.*;
 
 public class Serializer {
 
-	private int port;
-	private Socket clientSock;
-	private ArrayList<Integer> storedIDs;
 	private Document objsToSend;
 	private Element root;
 	private ArrayList<Integer> serializedIDs;
 
-	public Serializer(int port) {
-		storedIDs = new ArrayList();
-		this.port = port;
+	public Serializer() {
 		objsToSend = new Document();
 		root = new Element("serialized");
 		objsToSend.addContent(root);
 		serializedIDs = new ArrayList<Integer>();
 		
-		/*
-		 * try { System.out.print("Enter IP: "); Scanner in = new
-		 * Scanner(System.in); String ip = in.nextLine(); clientSock = new
-		 * Socket(ip, Driver.PORT); System.out.println("connected!");
-		 * 
-		 * PrintWriter out = new PrintWriter(clientSock.getOutputStream(),
-		 * true); out.println("Hello, there!"); clientSock.close(); } catch
-		 * (IOException e) {
-		 * System.out.println("Error connecting to client! Aborting...");
-		 * e.printStackTrace(); }
-		 */
+		
 	}
 	
 	public Document serialize(ArrayList<Object> list){
@@ -52,7 +35,6 @@ public class Serializer {
 		int id = System.identityHashCode(o);
 		e.setAttribute("class", o.getClass().getName());
 		e.setAttribute("id", Integer.toString(id));
-		storedIDs.add(id);
 
 		Class c = o.getClass();
 		Field[] fields = c.getDeclaredFields();
@@ -81,7 +63,6 @@ public class Serializer {
 			XMLOutputter xmlWriter = new XMLOutputter(Format.getPrettyFormat());
 			output.println(xmlWriter.outputString(objsToSend));
 			output.close();
-			System.err.println(loc.getAbsolutePath());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

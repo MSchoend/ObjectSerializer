@@ -10,8 +10,16 @@ public class SimpObj {
 		aDouble = b;
 	}
 	
-	public double getDouble(){
-		return aDouble;
+	public SimpObj(){
+		
+	}
+	
+	public void setInt(int i){
+		aNum = i;
+	}
+	
+	public void setDouble(double d){
+		aDouble = d;
 	}
 	
 	public String toString(){

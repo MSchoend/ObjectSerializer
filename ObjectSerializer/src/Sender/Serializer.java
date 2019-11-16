@@ -19,12 +19,11 @@ public class Serializer {
 		root = new Element("serialized");
 		objsToSend.addContent(root);
 		serializedIDs = new ArrayList<Integer>();
-		
-		
+
 	}
-	
-	public Document serialize(ArrayList<Object> list){
-		for(Object o : list){
+
+	public Document serialize(ArrayList<Object> list) {
+		for (Object o : list) {
 			add(convertToXML(o));
 		}
 		return objsToSend;
@@ -80,22 +79,21 @@ public class Serializer {
 			Element value = new Element("value");
 			value.addContent(f.get(o).toString());
 			e.addContent(value);
-		} else if (t.equals(ArrayList.class)){
-			ArrayList list = (ArrayList)f.get(o);
+		} else if (t.equals(ArrayList.class)) {
+			ArrayList list = (ArrayList) f.get(o);
 			Object[] array = list.toArray();
 			Element collect = new Element("object");
 			collect.setAttribute("class", list.getClass().getName());
 			collect.setAttribute("id", Integer.toString(System.identityHashCode(list)));
 			collect.setAttribute("length", Integer.toString(array.length));
-			for(Object v : array){
+			for (Object v : array) {
 				Element reference = new Element("reference");
 				reference.addContent(Integer.toString(System.identityHashCode(v)));
 				add(convertToXML(v));
 				collect.addContent(reference);
 			}
 			e.addContent(collect);
-		}
-			else if (cType != null) {
+		} else if (cType != null) {
 			Element array = new Element("object");
 			Object arr = f.get(o);
 			array.setAttribute("class", arr.getClass().getName());
@@ -105,11 +103,11 @@ public class Serializer {
 			if (cType.getTypeName().equals("int")) {
 				for (int i = 0; i < length; i++) {
 					Element value = new Element("value");
-					value.addContent(Integer.toString((int)Array.get(arr, i)));
+					value.addContent(Integer.toString((int) Array.get(arr, i)));
 					array.addContent(value);
 				}
 			} else {
-				for(int i = 0; i < length; i++){
+				for (int i = 0; i < length; i++) {
 					Element reference = new Element("reference");
 					Object value = Array.get(arr, i);
 					reference.addContent(Integer.toString(System.identityHashCode(value)));
@@ -125,10 +123,6 @@ public class Serializer {
 				int hash = System.identityHashCode(value);
 				reference.addContent(Integer.toString(hash));
 				e.addContent(reference);
-				if(!serializedIDs.contains(hash)){
-					serializedIDs.add(hash);
-					add(convertToXML(value));
-				}
 			}
 		}
 

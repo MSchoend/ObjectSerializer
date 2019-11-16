@@ -18,17 +18,19 @@ public class Driver {
 	private static Scanner input;
 	private static Document xml;
 	private static ArrayList<RefObj> references;
+	private static ArrayList<Object> allObjs;
 
 	public static void main(String args[]) {
 
 		Serializer s = new Serializer();
 		input = new Scanner(System.in);
-		ArrayList<Object> allObjs = new ArrayList<Object>();
+		allObjs = new ArrayList<Object>();
 		references = new ArrayList<RefObj>();
-		boolean willSend = runMenu(allObjs);
+		boolean willSend = runMenu();
+		System.err.println(allObjs.toString());
 		if (willSend) {
-			serialize(s, allObjs);
-			send();
+			serialize(s);
+			s.send();
 		}
 
 	}
@@ -58,7 +60,7 @@ public class Driver {
 
 	}
 
-	public static boolean runMenu(ArrayList<Object> list) {
+	public static boolean runMenu() {
 		int command = -1;
 		boolean result = false;
 
@@ -76,19 +78,19 @@ public class Driver {
 
 			switch (command) {
 			case 1:
-				list.add(makeSimple());
+				allObjs.add(makeSimple());
 				break;
 			case 2:
-				list.add(makeRef());
+				allObjs.add(makeRef());
 				break;
 			case 3:
-				list.add(makeArr());
+				allObjs.add(makeArr());
 				break;
 			case 4:
-				list.add(makeRefArr());
+				allObjs.add(makeRefArr());
 				break;
 			case 5:
-				list.add(makeColl());
+				allObjs.add(makeColl());
 				break;
 			case 6:
 				result = true;
@@ -104,9 +106,9 @@ public class Driver {
 		return result;
 	}
 
-	private static void serialize(Serializer sender, ArrayList<Object> list) {
+	private static void serialize(Serializer sender) {
 
-		xml = sender.serialize(list);
+		xml = sender.serialize(allObjs);
 
 	}
 
@@ -148,14 +150,14 @@ public class Driver {
 		int a = input.nextInt();
 		RefObj toReturn = new RefObj(a);
 		references.add(toReturn);
-		System.out.print("Make this object contain a reference? (else will be null) (y/n): ");
-		char choice = input.next().charAt(0);
+		System.out.print("Make this object contain a reference (1) or null (2): ");
+		int choice = input.nextInt();
 		RefObj b;
 		switch (choice) {
-		case 'y':
+		case 1:
 			b = makeCircRef();
 			break;
-		case 'n':
+		case 2:
 			b = null;
 			break;
 		default:
@@ -173,6 +175,7 @@ public class Driver {
 		switch (input.nextInt()) {
 		case 1:
 			toReturn = makeRef();
+			allObjs.add(toReturn);
 			break;
 		case 2:
 			System.out.println("Choose an index (1-n):");

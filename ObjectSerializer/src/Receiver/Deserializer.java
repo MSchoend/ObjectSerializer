@@ -4,6 +4,7 @@ import java.lang.reflect.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +22,7 @@ public class Deserializer {
 
 	private static HashMap<Integer, Object> allObjs;
 	private static PrintWriter outputter;
-
+	private static ArrayList<Object> inspectedObjs;
 
 	public static void main(String args[]) {
 
@@ -41,11 +42,13 @@ public class Deserializer {
 			 */
 
 			deserialize(xml);
-			
+
 			outputter = new PrintWriter("inspected.txt");
+			inspectedObjs = new ArrayList<Object>();
 			Set<Integer> keys = allObjs.keySet();
 			for (Integer k : keys) {
-				inspect(allObjs.get(k));
+				inspect(allObjs.get(k), 0);
+				inspectedObjs.clear();
 			}
 			outputter.close();
 			clientSock.close();
@@ -93,7 +96,7 @@ public class Deserializer {
 				Class declaring = Class.forName(f.getAttributeValue("declaringclass"));
 				Field field = declaring.getDeclaredField(f.getAttributeValue("name"));
 				field.setAccessible(true);
-				field.set(eObj, getField(field.getType() , f));
+				field.set(eObj, getField(field.getType(), f));
 			}
 		} else {
 
@@ -116,14 +119,46 @@ public class Deserializer {
 		return null;
 	}
 
-	private static void inspect(Object o) {
+	private static void inspect(Object o, int depth) {
+		String padding = "";
+		for (int i = 0; i < depth; i++) {
+			padding += "\t";
+		}
 		try {
 			Class clazz = o.getClass();
-			outputter.append("Class: " + clazz.getName() + "\n");
+			outputter.append(padding + "Class: " + clazz.getName() + "\n");
 			Field[] fields = clazz.getDeclaredFields();
+
 			for (Field f : fields) {
 				f.setAccessible(true);
-				outputter.append(" Field: " + f.getName() + " - " + f.get(o) + "\n");
+				Class fType = f.getType();
+				outputter.append(padding + "> " + fType.getSimpleName() + " " + f.getName() + " = ");
+
+				if (fType.isPrimitive()) {
+					outputter.append(f.get(o).toString() + "\n");
+				} else if (fType.isArray()) {
+					Object arr = f.get(o);
+					Class cType = fType.getComponentType();
+					if (cType.equals(int.class)) {
+						outputter.append(Arrays.toString((int[]) arr));
+					} else {
+						outputter.append("\n");
+						Object[] objArray = (Object[]) arr;
+						for (Object e : objArray) {
+							inspect(e, depth + 1);
+						}
+					}
+					outputter.append("\n");
+				} else {
+					outputter.append("\n");
+					Object toInspect = f.get(o);
+					if (!inspectedObjs.contains(toInspect)) {
+						inspectedObjs.add(toInspect);
+						inspect(toInspect, depth + 1);
+						outputter.append("\n");
+					}
+				}
+
 			}
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			// TODO Auto-generated catch block

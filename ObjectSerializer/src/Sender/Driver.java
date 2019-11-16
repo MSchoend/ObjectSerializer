@@ -31,7 +31,7 @@ public class Driver {
 		if (willSend) {
 			serialize(s);
 			s.send();
-			send();
+			//send();
 		}
 
 	}
@@ -120,6 +120,7 @@ public class Driver {
 		for (int i = 0; i < len; i++) {
 			System.out.println("--Object " + (i + 1) + "--");
 			list.add(makeSimple());
+			allObjs.add(list.get(i));
 		}
 		return new CollectObj(list);
 	}
@@ -131,6 +132,7 @@ public class Driver {
 		for (int i = 0; i < len; i++) {
 			System.out.println("--Object " + (i + 1) + "--");
 			arr[i] = makeSimple();
+			allObjs.add(arr[i]);
 		}
 		return new RefArrayObj(arr);
 	}

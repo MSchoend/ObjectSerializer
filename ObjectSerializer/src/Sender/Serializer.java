@@ -36,16 +36,20 @@ public class Serializer {
 		e.setAttribute("id", Integer.toString(id));
 
 		Class c = o.getClass();
-		Field[] fields = c.getDeclaredFields();
-		for (Field f : fields) {
-			// managing for primitives, objects, arrays
-			try {
-				e.addContent(convertField(f, o));
-			} catch (IllegalArgumentException | IllegalAccessException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+		if (!c.isArray()) {
+			Field[] fields = c.getDeclaredFields();
+			for (Field f : fields) {
+				// managing for primitives, objects, arrays
+				try {
+					e.addContent(convertField(f, o));
+				} catch (IllegalArgumentException | IllegalAccessException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 
+			}
+		} else {
+			convertArray(o, e);
 		}
 
 		return e;
@@ -74,48 +78,17 @@ public class Serializer {
 		e.setAttribute("name", f.getName());
 		e.setAttribute("declaringclass", f.getDeclaringClass().getName());
 		Class t = f.getType();
-		Type cType = t.getComponentType();
 		if (t.isPrimitive()) {
 			Element value = new Element("value");
 			value.addContent(f.get(o).toString());
 			e.addContent(value);
-		} else if (t.equals(ArrayList.class)) {
-			ArrayList list = (ArrayList) f.get(o);
-			Object[] array = list.toArray();
-			Element collect = new Element("object");
-			collect.setAttribute("class", list.getClass().getName());
-			collect.setAttribute("id", Integer.toString(System.identityHashCode(list)));
-			collect.setAttribute("length", Integer.toString(array.length));
-			for (Object v : array) {
-				Element reference = new Element("reference");
-				reference.addContent(Integer.toString(System.identityHashCode(v)));
-				add(convertToXML(v));
-				collect.addContent(reference);
-			}
-			e.addContent(collect);
-		} else if (cType != null) {
-			Element array = new Element("object");
-			Object arr = f.get(o);
-			array.setAttribute("class", arr.getClass().getName());
-			array.setAttribute("id", Integer.toString(System.identityHashCode(arr)));
-			int length = Array.getLength(arr);
-			array.setAttribute("length", Integer.toString(length));
-			if (cType.getTypeName().equals("int")) {
-				for (int i = 0; i < length; i++) {
-					Element value = new Element("value");
-					value.addContent(Integer.toString((int) Array.get(arr, i)));
-					array.addContent(value);
-				}
-			} else {
-				for (int i = 0; i < length; i++) {
-					Element reference = new Element("reference");
-					Object value = Array.get(arr, i);
-					reference.addContent(Integer.toString(System.identityHashCode(value)));
-					add(convertToXML(value));
-					array.addContent(reference);
-				}
-			}
-			e.addContent(array);
+		} else if (t.isArray()) {
+			Element reference = new Element("reference");
+			Object value = f.get(o);
+			reference.addContent(Integer.toString(System.identityHashCode(value)));
+			root.addContent(convertToXML(value));
+			e.addContent(reference);
+			
 		} else {
 			Element reference = new Element("reference");
 			Object value = f.get(o);
@@ -123,10 +96,31 @@ public class Serializer {
 				int hash = System.identityHashCode(value);
 				reference.addContent(Integer.toString(hash));
 				e.addContent(reference);
+			} else {
+				reference.addContent("-1");
 			}
 		}
 
 		return e;
+	}
+	
+	private void convertArray(Object o, Element e){
+		Class arrType = o.getClass().getComponentType();
+		if(arrType.equals(int.class)){
+			int[] iArr = (int[])o;
+			for(int i : iArr){
+				Element value = new Element("value");
+				value.addContent(Integer.toString(i));
+				e.addContent(value);
+			}
+		} else {
+			Object[] oArr = (Object[])o;
+			for(Object v : oArr){
+				Element reference = new Element("reference");
+				reference.addContent(Integer.toString(System.identityHashCode(v)));
+				e.addContent(reference);
+			}
+		}
 	}
 
 }

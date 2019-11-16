@@ -95,10 +95,10 @@ public class Serializer {
 			if (value != null) {
 				int hash = System.identityHashCode(value);
 				reference.addContent(Integer.toString(hash));
-				e.addContent(reference);
 			} else {
 				reference.addContent("-1");
 			}
+			e.addContent(reference);
 		}
 
 		return e;
@@ -108,6 +108,7 @@ public class Serializer {
 		Class arrType = o.getClass().getComponentType();
 		if(arrType.equals(int.class)){
 			int[] iArr = (int[])o;
+			e.setAttribute("length", Integer.toString(iArr.length));
 			for(int i : iArr){
 				Element value = new Element("value");
 				value.addContent(Integer.toString(i));
@@ -115,6 +116,7 @@ public class Serializer {
 			}
 		} else {
 			Object[] oArr = (Object[])o;
+			e.setAttribute("length", Integer.toString(oArr.length));
 			for(Object v : oArr){
 				Element reference = new Element("reference");
 				reference.addContent(Integer.toString(System.identityHashCode(v)));

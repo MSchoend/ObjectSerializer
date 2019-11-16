@@ -31,7 +31,7 @@ public class Driver {
 		if (willSend) {
 			serialize(s);
 			s.send();
-			//send();
+			send();
 		}
 
 	}

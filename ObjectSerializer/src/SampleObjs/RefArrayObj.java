@@ -10,6 +10,10 @@ public class RefArrayObj {
 		this.anArray = anArray;
 	}
 	
+	public RefArrayObj(){
+		
+	}
+	
 	public String toString(){
 		return "SimpObj Array: " + Arrays.toString(anArray);
 	}

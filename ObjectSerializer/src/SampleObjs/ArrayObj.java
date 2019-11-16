@@ -10,6 +10,10 @@ public class ArrayObj {
 		this.anArray = anArray;
 	}
 	
+	public ArrayObj(){
+		
+	}
+	
 	public String toString(){
 		return "Int Array: " + Arrays.toString(anArray);
 	}

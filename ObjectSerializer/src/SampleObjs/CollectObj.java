@@ -11,6 +11,10 @@ public class CollectObj {
 		this.aList = aList;
 	}
 	
+	public CollectObj(){
+		
+	}
+	
 	public String toString(){
 		return "SimpObj ArrayList: " + Arrays.toString(aList.toArray());
 	}

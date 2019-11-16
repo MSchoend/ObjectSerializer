@@ -59,6 +59,7 @@ public class Serializer {
 		root.addContent(e);
 	}
 
+	//For debugging purposes only
 	public void send() {
 		try {
 			File loc = new File("output.txt");

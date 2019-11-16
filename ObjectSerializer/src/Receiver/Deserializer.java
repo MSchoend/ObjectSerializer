@@ -68,7 +68,6 @@ public class Deserializer {
 		for (Element e : elems) { // create all objects
 			Integer id = Integer.parseInt(e.getAttributeValue("id"));
 			if (allObjs.get(id) == null) {
-				System.err.println("Adding " + id);
 				allObjs.put(id, objectFromElement(e));
 			}
 		}
@@ -89,8 +88,6 @@ public class Deserializer {
 
 	private static void assignFields(Element e) throws ClassNotFoundException, NoSuchFieldException, SecurityException,
 			IllegalArgumentException, IllegalAccessException {
-		System.err.println("Assigning fields for " + e.getAttributeValue("id"));
-		System.err.flush();
 		Object eObj = allObjs.get(Integer.parseInt(e.getAttributeValue("id")));
 		Class eClass = eObj.getClass();
 		List<Element> eFields = e.getChildren();

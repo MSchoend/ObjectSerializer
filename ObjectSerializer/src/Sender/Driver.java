@@ -27,10 +27,9 @@ public class Driver {
 		allObjs = new ArrayList<Object>();
 		references = new ArrayList<RefObj>();
 		boolean willSend = runMenu();
-		System.err.println(allObjs.toString());
 		if (willSend) {
 			serialize(s);
-			s.send();
+			//s.send();
 			send();
 		}
 
